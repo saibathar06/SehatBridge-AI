@@ -1,0 +1,7 @@
+android/
+ios/
+.expo/
+dist/
+node_modules/
+.env
+audit-report.json

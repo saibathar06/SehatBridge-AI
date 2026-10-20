@@ -1,0 +1,91 @@
+[
+  {
+    "id": "printed",
+    "files": [
+      "printed.png"
+    ],
+    "expected": {
+      "medicine_name": "SYNTHETIC MEDICINE A",
+      "dose": "1",
+      "dose_unit": "test tablet",
+      "frequency": "once daily",
+      "scheduled_times": [
+        "08:00"
+      ],
+      "duration": "3 days",
+      "clarification_required": false
+    }
+  },
+  {
+    "id": "rotated_blurry",
+    "files": [
+      "rotated_blurry.png"
+    ],
+    "expected": {
+      "clarification_required": true
+    }
+  },
+  {
+    "id": "missing_details",
+    "files": [
+      "missing_details.png"
+    ],
+    "expected": {
+      "medicine_name": "SYNTHETIC MEDICINE B",
+      "dose": null,
+      "duration": null,
+      "clarification_required": true
+    }
+  },
+  {
+    "id": "conflicting",
+    "files": [
+      "conflicting.png"
+    ],
+    "expected": {
+      "medicine_name": "SYNTHETIC MEDICINE C",
+      "clarification_required": true
+    }
+  },
+  {
+    "id": "similar_digits",
+    "files": [
+      "similar_digits.png"
+    ],
+    "expected": {
+      "medicine_name": "SYNTHETIC MEDICINE D",
+      "clarification_required": true
+    }
+  },
+  {
+    "id": "multipage_pdf",
+    "files": [
+      "discharge.pdf"
+    ],
+    "expected": {
+      "follow_up_date": "2099-01-01",
+      "test_date": "2099-01-02"
+    }
+  },
+  {
+    "id": "multiple_photos",
+    "files": [
+      "photo-page-1.jpg",
+      "photo-page-2.jpg"
+    ],
+    "expected": {
+      "follow_up_date": "2099-01-01",
+      "test_date": "2099-01-02"
+    }
+  },
+  {
+    "id": "illegible_strokes",
+    "files": [
+      "illegible_strokes.png"
+    ],
+    "expected": {
+      "medicine_name": null,
+      "clarification_required": true
+    }
+  }
+]

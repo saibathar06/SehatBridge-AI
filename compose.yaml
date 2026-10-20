@@ -1,0 +1,60 @@
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: sehatbridge
+      POSTGRES_USER: sehatbridge
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD outside source control}
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sehatbridge"]
+      interval: 5s
+      retries: 12
+  redis:
+    image: redis:8-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
+  migrate:
+    build: ./backend
+    env_file: ./backend/.env
+    environment:
+      DATABASE_URL: postgresql+psycopg://sehatbridge:${POSTGRES_PASSWORD}@postgres:5432/sehatbridge
+      REDIS_URL: redis://redis:6379/0
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+  api:
+    build: ./backend
+    env_file: ./backend/.env
+    environment: &backend_env
+      DATABASE_URL: postgresql+psycopg://sehatbridge:${POSTGRES_PASSWORD}@postgres:5432/sehatbridge
+      REDIS_URL: redis://redis:6379/0
+      STORAGE_PATH: /data/storage
+    ports:
+      - "8000:8000"
+    volumes:
+      - privatefiles:/data/storage
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_started
+    restart: unless-stopped
+  worker:
+    build: ./backend
+    env_file: ./backend/.env
+    environment: *backend_env
+    command: ["python", "-m", "app.worker"]
+    volumes:
+      - privatefiles:/data/storage
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+volumes:
+  pgdata:
+  redisdata:
+  privatefiles:
